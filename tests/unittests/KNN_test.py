@@ -1,4 +1,4 @@
-import cPickle
+import pickle
 import numpy
 numpy.random.seed(1)
 
@@ -62,13 +62,13 @@ class KNNTest(unittest.TestCase):
             self.assertEqual(upper[idx], should_be_upper[idx])
 
         y = model.predict(x=x_train_data[1, :])
-        print "Is: %100.70f, Should: %f" % (y, y_train_data[1])
+        print("Is: %100.70f, Should: %f" % (y, y_train_data[1]))
         self.assertAlmostEqual(y[0], 0.281714285714)
 
-        print "Predict whole data"
+        print("Predict whole data")
         y_whole = model.predict(x=x_test_data)
         mse = mean_squared_error(y_true=y_test_data, y_pred=y_whole)
-        print "MSE: %100.70f" % mse
+        print("MSE: %100.70f" % mse)
         self.assertAlmostEqual(mse, 0.0093528907735581299)
 
         # Try the same with encoded features
@@ -79,21 +79,21 @@ class KNNTest(unittest.TestCase):
                     param_names=self._para_header, rng=1)
 
         y = model.predict(x=self._data[1, :-2])
-        print "Is: %100.70f, Should: %f" % (y, self._data[1, -2])
+        print("Is: %100.70f, Should: %f" % (y, self._data[1, -2]))
         self.assertAlmostEqual(y[0], 0.28522216666666667)
 
-        print "Predict whole data"
+        print("Predict whole data")
         y_whole = model.predict(x=x_test_data)
         mse = mean_squared_error(y_true=y_test_data, y_pred=y_whole)
-        print "MSE: %100.70f" % mse
+        print("MSE: %100.70f" % mse)
         self.assertAlmostEqual(mse, 0.0092382390066771715)
 
         fn = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                           "Testdata/testknn.pkl")
         fh = open(fn, "wb")
-        cPickle.dump(model, fh)
+        pickle.dump(model, fh)
         fh.close()
-        a = cPickle.load(file(fn))
+        a = pickle.load(file(fn))
 
         #print "Predict whole data"
         y_whole = a.predict(x=x_test_data)

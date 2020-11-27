@@ -39,7 +39,7 @@ class RegressionBaseClass(object):
     _training_finished = False
     _num_folds = None
     _debug = False
-    _max_number_train_data = sys.maxint
+    _max_number_train_data = sys.maxsize
 
     def __init__(self, sp, encode, rng, debug=False):
         numpy.random.seed(rng)

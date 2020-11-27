@@ -244,7 +244,7 @@ class NormalIntegerHyperparameter(IntegerHyperparameter):
 
 def create_dag_from_hyperparameters(hyperparameters):
     if type(hyperparameters) == dict:
-        hyperparameters = hyperparameters.values()
+        hyperparameters = list(hyperparameters.values())
     elif type(hyperparameters) in [list, tuple]:
         pass
     else:
@@ -265,7 +265,7 @@ def create_dag_from_hyperparameters(hyperparameters):
         if hyperparameter.conditions != [[]]:
             # Extend to handle or-conditions
             if len(hyperparameter.conditions) > 1:
-                print hyperparameter.name, hyperparameter.conditions
+                print(hyperparameter.name, hyperparameter.conditions)
                 raise NotImplementedError()
 
             # extract all conditions and check if all parent nodes are
@@ -314,7 +314,7 @@ def create_dag_from_hyperparameters(hyperparameters):
                         continue
 
             if len(candidates) != 1:
-                print candidates
+                print(candidates)
                 raise ValueError()
 
             parent = depends_on[candidates[0]][0]
@@ -337,7 +337,7 @@ def get_dag(dag):
     # copy the graph, sort the children and then traverse it
     for adj in sorted_dag.adj:
         sorted_dag.adj[adj] = OrderedDict(
-            sorted(sorted_dag.adj[adj].items(), key=lambda item: item[0]))
+            sorted(list(sorted_dag.adj[adj].items()), key=lambda item: item[0]))
 
     nodes = nx.dfs_postorder_nodes\
         (sorted_dag, source='__HPOlib_configuration_space_root__')

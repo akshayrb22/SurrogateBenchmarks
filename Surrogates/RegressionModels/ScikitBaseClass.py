@@ -22,16 +22,17 @@ import copy
 
 import numpy
 
-import model_util
-import scaler
-import RegressionBaseClass
+from . import model_util
+from . import scaler
+from . import RegressionBaseClass
 
 
 class ScikitBaseClass(RegressionBaseClass.RegressionBaseClass):
-
     def __init__(self, sp, encode, rng, debug=False, **kwargs):
         numpy.random.seed(rng)
-        RegressionBaseClass.RegressionBaseClass.__init__(self, sp=sp, rng=rng,
+        RegressionBaseClass.RegressionBaseClass.__init__(self,
+                                                         sp=sp,
+                                                         rng=rng,
                                                          encode=encode,
                                                          debug=debug)
 
@@ -50,28 +51,31 @@ class ScikitBaseClass(RegressionBaseClass.RegressionBaseClass):
 
         # 2. Maybe encode data
         if self._encode:
-            scaled_x, self._used_param_names = \
-                model_util.encode(sp=self._sp, x=scaled_x,
-                                  param_names=self._param_names,
-                                  num_folds=self._num_folds,
-                                  catdict=self._catdict)
+            scaled_x, self._used_param_names = model_util.encode(
+                sp=self._sp,
+                x=scaled_x,
+                param_names=self._param_names,
+                num_folds=self._num_folds,
+                catdict=self._catdict)
         else:
             self._used_param_names = self._param_names
 
         # 4. Set statistics
         if self._encode:
             #raise NotImplementedError("One-hot-encoding is not implemented")
-            self._scale_info = \
-                scaler.get_x_info_scaling_all(sp=self._sp, x=scaled_x,
-                                              param_names=self._used_param_names,
-                                              num_folds=self._num_folds,
-                                              encoded=self._encode)
+            self._scale_info = scaler.get_x_info_scaling_all(
+                sp=self._sp,
+                x=scaled_x,
+                param_names=self._used_param_names,
+                num_folds=self._num_folds,
+                encoded=self._encode)
         else:
-            self._scale_info = \
-                scaler.get_x_info_scaling_all(sp=self._sp, x=scaled_x,
-                                              param_names=self._used_param_names,
-                                              num_folds=self._num_folds,
-                                              encoded=self._encode)
+            self._scale_info = scaler.get_x_info_scaling_all(
+                sp=self._sp,
+                x=scaled_x,
+                param_names=self._used_param_names,
+                num_folds=self._num_folds,
+                encoded=self._encode)
 
         # 4. Scale data
         scaled_x = scaler.scale(scale_info=self._scale_info, x=scaled_x)
@@ -81,17 +85,17 @@ class ScikitBaseClass(RegressionBaseClass.RegressionBaseClass):
         assert self._training_finished, "Training is not finished"
         x_scaled = x
         # 1. Relace strings with numbers
-        x_scaled = model_util.replace_cat_variables(x=x_scaled,
-                                                    catdict=self._catdict,
-                                                    param_names=self._param_names)
+        x_scaled = model_util.replace_cat_variables(
+            x=x_scaled, catdict=self._catdict, param_names=self._param_names)
 
         # 2. Maybe encode data
         if self._encode:
-            x_scaled, tmp_param_names = \
-                model_util.encode(sp=self._sp, x=x_scaled,
-                                  param_names=self._param_names,
-                                  num_folds=self._num_folds,
-                                  catdict=self._catdict)
+            x_scaled, tmp_param_names = model_util.encode(
+                sp=self._sp,
+                x=x_scaled,
+                param_names=self._param_names,
+                num_folds=self._num_folds,
+                catdict=self._catdict)
             assert self._used_param_names == tmp_param_names
         # 3. Scale data
         x_scaled = scaler.scale(scale_info=self._scale_info, x=x_scaled)
@@ -103,15 +107,13 @@ class ScikitBaseClass(RegressionBaseClass.RegressionBaseClass):
                 continue
             elif p == "fold_0" and self._num_folds == 1:
                 #print idx, p, numpy.max(scaled_x[:, idx]), numpy.min(scaled_x[:, idx])
-                assert (numpy.max(scaled_x[:, idx])-1 == 0 and
-                        numpy.min(scaled_x[:, idx])-1 == 0)
+                assert (numpy.max(scaled_x[:, idx]) - 1 == 0
+                        and numpy.min(scaled_x[:, idx]) - 1 == 0)
             else:
                 #print idx, p, numpy.max(scaled_x[:, idx]), numpy.min(scaled_x[:, idx])
                 assert numpy.max(scaled_x[:, idx])-1 <= tol or \
-                    abs(numpy.max(scaled_x[:, idx]) -
-                        numpy.min(scaled_x[:, idx])) <= tol, \
-                       (numpy.max(scaled_x[:, idx]),
-                        numpy.min(scaled_x[:, idx]))
+                    abs(numpy.max(scaled_x[:, idx]) - numpy.min(scaled_x[:, idx])) <= tol, \
+                       (numpy.max(scaled_x[:, idx]), numpy.min(scaled_x[:, idx]))
             # Check also sanity
         assert numpy.isfinite(scaled_x).all()
 
@@ -121,8 +123,8 @@ class ScikitBaseClass(RegressionBaseClass.RegressionBaseClass):
         # print x.shape
         x_copy = copy.deepcopy(x)
         if type(x_copy) == list or len(x_copy.shape) == 1:
-            x_copy = numpy.array(x_copy, dtype="float64").reshape([1,
-                                                                   len(x_copy)])
+            x_copy = numpy.array(x_copy,
+                                 dtype="float64").reshape([1, len(x_copy)])
         x_copy = self._preprocess(x=x_copy)
 
         # Check that each input is between 0 and 1

@@ -46,7 +46,7 @@ def write_truth(train_idx, test_idx, data, fn, save_dir="/tmp/"):
             train_truth = data[cv[idx]]
             save_one_line_to_csv(train_tmp, train_truth, len(fold))
             save_one_line_to_csv(test_tmp, data[test_idx[idx]], len(fold))
-    print train_tmp, train_fn
+    print(train_tmp, train_fn)
     os.rename(train_tmp, train_fn)
     os.rename(test_tmp, test_fn)
 
@@ -96,7 +96,7 @@ def main():
     # Cut out the objective
     data_x = data[:, :-2]
     if args.time:
-        print "TRAINING ON TIME"
+        print("TRAINING ON TIME")
         data_y = data[:, -2]   # -1 -> perf, -2 -> duration
     else:
         data_y = data[:, -1]   # -1 -> perf, -2 -> duration
@@ -213,14 +213,14 @@ def main():
     predict_duration_array = numpy.zeros(len(train_idx_list)*num_cv)
 
     # Some variables
-    train_duration = sys.maxint
-    predict_duration = sys.maxint
+    train_duration = sys.maxsize
+    predict_duration = sys.maxsize
 
     # Save hash to check whether we changed something during training
     data_x_hash = hash(numpy.array_repr(data_x))
     data_y_hash = hash(data_y.tostring())
 
-    print "Train %s\n" % model_type,
+    print("Train %s\n" % model_type, end=' ')
     # Do all subsamples
     for train_idx_idx, train_idx_index in enumerate(train_idx_list):
         # Start training for this dataset size
@@ -284,8 +284,8 @@ def main():
     os.rename(model_test_fn,
               os.path.join(args.save + "prediction",
                            "%s_test_prediction.csv" % model_type))
-    print "\nSaved to %s" % os.path.join(args.save + "prediction",
-                                         "%s_test_prediction.csv" % model_type)
+    print("\nSaved to %s" % os.path.join(args.save + "prediction",
+                                         "%s_test_prediction.csv" % model_type))
 
     # And save before proceeding to next model_type
     save_one_line_to_csv(args.save + '/train_duration.csv',

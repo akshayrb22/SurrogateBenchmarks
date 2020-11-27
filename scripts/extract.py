@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-import cPickle
+import pickle
 import os
 import csv
 
@@ -71,18 +71,18 @@ def main():
         pkl_fn = os.path.abspath(arg)
         if not '.pkl' in pkl_fn or not os.path.exists(pkl_fn):
             raise ValueError("%s is not a .pkl file" % pkl_fn)
-        print "Loading %100s" % pkl_fn,
+        print("Loading %100s" % pkl_fn, end=' ')
 
         # Loading one pkl
-        trials = cPickle.load(file(pkl_fn))
+        trials = pickle.load(file(pkl_fn))
 
         pkl_list.append(arg)
-        print "%3d" % len(trials['trials'])
+        print("%3d" % len(trials['trials']))
         for idx, trl in enumerate(trials['trials']):
             # print idx, trl
             # Convert this trial in a regular dict
             clean_dict = dict()
-            for i in trl['params'].keys():
+            for i in list(trl['params'].keys()):
                 #print i, trl['params'][i]
                 tmp_i = i                
                 if i[0] == "-":
@@ -96,7 +96,7 @@ def main():
                     clean_dict[tmp_i] = trl['params'][i].strip(" ").\
                         strip("'").strip('"')
                 else:
-                    print tmp_i
+                    print(tmp_i)
                     clean_dict[tmp_i] = Surrogates.DataExtraction.\
                         handle_configurations.convert_to_number(trl['params'][i])
             #print "CLEAN", clean_dict
@@ -156,13 +156,13 @@ def main():
     results = np.array(results)
     durations = np.array(durations)
 
-    print "#Params: %10d" % len(header)
-    print "Params:  %s" % str(header)
-    print "Invalid results : %d" % infinite_counter
-    print "timeout counter: %d" % timeout_counter
-    print "x_data:  %10s" % str(len(param_data))
-    print "results: %10d" % results.shape[0]
-    print "duration:%10d" % durations.shape[0]
+    print("#Params: %10d" % len(header))
+    print("Params:  %s" % str(header))
+    print("Invalid results : %d" % infinite_counter)
+    print("timeout counter: %d" % timeout_counter)
+    print("x_data:  %10s" % str(len(param_data)))
+    print("results: %10d" % results.shape[0])
+    print("duration:%10d" % durations.shape[0])
 
     # Create other headers
     type_header = list(["CAT", ])
@@ -196,19 +196,19 @@ def main():
     cond_header.append('TARGET')
     cond_header.append('TARGET')
 
-    print "-------"
-    print
-    print
-    print "%s" % (",".join(["%12s" % i[:12] for i in header]))
-    print "%s" % (",".join(["%12s" % i[:12] for i in type_header]))
-    print "%s" % (",".join(["%12s" % i for i in cond_header]))
+    print("-------")
+    print()
+    print()
+    print("%s" % (",".join(["%12s" % i[:12] for i in header])))
+    print("%s" % (",".join(["%12s" % i[:12] for i in type_header])))
+    print("%s" % (",".join(["%12s" % i for i in cond_header])))
     for row in range(10):
-        print "%s" % (",".join(["%12.5s" % str(i) for i in param_data[row]]))
-    print "..."
+        print("%s" % (",".join(["%12.5s" % str(i) for i in param_data[row]])))
+    print("...")
 
     if args.save is not None:
         fn = args.save + '_fastrf_results.csv'
-        print "Save to %s" % fn
+        print("Save to %s" % fn)
         with open(fn, 'wb') as csvfile:
             result_writer = csv.writer(csvfile, delimiter=',', quotechar='|',
                                        quoting=csv.QUOTE_MINIMAL)
@@ -237,19 +237,19 @@ def main():
     param_data = np.array(param_data)
 
     # Now write down spear_cond version
-    print "-------"
-    print
-    print
-    print "%s" % (",".join(["%12s" % i[:12] for i in header]))
-    print "%s" % (",".join(["%12s" % i[:12] for i in type_header]))
-    print "%s" % (",".join(["%12s" % i for i in cond_header]))
+    print("-------")
+    print()
+    print()
+    print("%s" % (",".join(["%12s" % i[:12] for i in header])))
+    print("%s" % (",".join(["%12s" % i[:12] for i in type_header])))
+    print("%s" % (",".join(["%12s" % i for i in cond_header])))
     for row in range(10):
-        print "%s" % (",".join(["%12.5s" % str(i) for i in param_data[row]]))
-    print "..."
+        print("%s" % (",".join(["%12.5s" % str(i) for i in param_data[row]])))
+    print("...")
 
     if args.save is not None:
         fn = args.save + '_spear_cond_results.csv'
-        print "Save to %s" % fn
+        print("Save to %s" % fn)
         with open(fn, 'wb') as csvfile:
             result_writer = csv.writer(csvfile, delimiter=',', quotechar='|',
                                        quoting=csv.QUOTE_MINIMAL)
@@ -263,7 +263,7 @@ def main():
 
     checkpoint = np.array(param_data[:, -2:], copy=True)
 
-    print "Encoding categorical features using a one hot encoding scheme"
+    print("Encoding categorical features using a one hot encoding scheme")
     new_data = None
     new_para_header = list()
     new_type_header = list()
@@ -326,7 +326,7 @@ def main():
         if para == "fold":
             val_range = encoder.active_features_
         else:
-            val_range = range(len(catdict[para].keys()))
+            val_range = list(range(len(list(catdict[para].keys()))))
 
         for val in val_range:
             if para == "fold":
@@ -346,8 +346,8 @@ def main():
         new_cond_header.extend([new_cond for val in val_range])
 
     num_vals = sum([1 if i == "CAT" else 0 for i in new_type_header])
-    print "Encoding %d of %d features with %d values" % \
-          (encode_ct, len(header), num_vals)
+    print("Encoding %d of %d features with %d values" % \
+          (encode_ct, len(header), num_vals))
     assert new_data.shape[1] == len(header)-encode_ct + num_vals,\
         "Data shape is %f, but it should be %f" % \
         (new_data.shape[1], len(header) - encode_ct + num_vals)
@@ -362,19 +362,19 @@ def main():
     assert ((checkpoint == new_data[:, -2:]).all())
 
     # Now write down encoded version
-    print "-------"
-    print
-    print
-    print "%s" % (",".join(["%12s" % i[:12] for i in header]))
-    print "%s" % (",".join(["%12s" % i[:12] for i in type_header]))
-    print "%s" % (",".join(["%12s" % i for i in cond_header]))
+    print("-------")
+    print()
+    print()
+    print("%s" % (",".join(["%12s" % i[:12] for i in header])))
+    print("%s" % (",".join(["%12s" % i[:12] for i in type_header])))
+    print("%s" % (",".join(["%12s" % i for i in cond_header])))
     for row in range(10):
-        print "%s" % (",".join(["%12.5s" % str(i) for i in param_data[row]]))
-    print "..."
+        print("%s" % (",".join(["%12.5s" % str(i) for i in param_data[row]])))
+    print("...")
 
     if args.save is not None:
         fn = args.save + '_encoded_results.csv'
-        print "Save to %s" % fn
+        print("Save to %s" % fn)
         with open(fn, 'wb') as csvfile:
             result_writer = csv.writer(csvfile, delimiter=',', quotechar='|',
                                        quoting=csv.QUOTE_MINIMAL)

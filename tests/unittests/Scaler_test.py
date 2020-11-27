@@ -18,7 +18,7 @@ class ScalerTest(unittest.TestCase):
     _sp = None
 
     def setUp(self):
-        self._sp = pcs_parser.read(file(os.path.join(os.path.dirname(os.path.realpath(__file__)), "Testdata/nips2011.pcs")))
+        self._sp = pcs_parser.read(os.path.join(os.path.dirname(os.path.realpath(__file__)), "Testdata/nips2011.pcs"))
         # Read data from csv
         header, self._data = read_csv(os.path.join(os.path.dirname(os.path.realpath(__file__)), "Testdata/hpnnet_nocv_convex_all_fastrf_results.csv"),
                                       has_header=True, num_header_rows=3)
@@ -41,7 +41,7 @@ class ScalerTest(unittest.TestCase):
         for idx in range(self._data.shape[1]):
             self.assertEqual(scale_info[0][idx], should_be_lower[idx])
             self.assertEqual(scale_info[1][idx], should_be_upper[idx])
-        print self._data[0:1, :]
+        print(self._data[0:1, :])
 
         scaled = Surrogates.RegressionModels.scaler.scale(scale_info=scale_info, x=self._data[0:1, :])[0]
         should_be_scaled = [0., 0.70916157, 0.49963619, 1., 0.49962673, 0., 0., 0., 0.17997641, 0., 0.8548805,

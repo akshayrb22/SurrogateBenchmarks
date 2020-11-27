@@ -26,7 +26,7 @@ import sys
 import numpy as np
 import pyparsing
 
-import configuration_space
+from . import configuration_space
 
 
 # Build pyparsing expressions for params
@@ -134,7 +134,7 @@ def read(pcs_string, debug=False):
                 raise NotImplementedError("Could not parse condition: %s" % line)
             continue
         if "}" not in line and "]" not in line:
-            print "Skipping: %s" % line
+            print("Skipping: %s" % line)
             continue
         if len(line.strip()) == 0:
             continue
@@ -206,18 +206,18 @@ def read(pcs_string, debug=False):
             searchspace[child].conditions[0].extend([cond_str, ])
 
     if debug:
-        print
-        print "============== Reading Results"
-        print "First 10 lines:"
+        print()
+        print("============== Reading Results")
+        print("First 10 lines:")
         sp_list = ["%s: %s" % (j, str(searchspace[j])) for j in searchspace]
-        print "\n".join(sp_list[:10])
-        print
-        print "#Invalid lines: %d ( of %d )" % (line_ct - len(conditions) - ct, line_ct)
-        print "#Parameter: %d" % len(searchspace)
-        print "#Conditions: %d" % len(conditions)
-        print "#Conditioned params: %d" % sum([1 if len(searchspace[j].conditions[0]) > 0 else 0 for j in searchspace])
-        print "#Categorical: %d" % cat_ct
-        print "#Continuous: %d" % cont_ct
+        print("\n".join(sp_list[:10]))
+        print()
+        print("#Invalid lines: %d ( of %d )" % (line_ct - len(conditions) - ct, line_ct))
+        print("#Parameter: %d" % len(searchspace))
+        print("#Conditions: %d" % len(conditions))
+        print("#Conditioned params: %d" % sum([1 if len(searchspace[j].conditions[0]) > 0 else 0 for j in searchspace]))
+        print("#Categorical: %d" % cat_ct)
+        print("#Continuous: %d" % cont_ct)
     return searchspace
 
 
@@ -246,11 +246,11 @@ if __name__ == "__main__":
     orig_pcs = fh.readlines()
     sp = read(orig_pcs, debug=True)
     created_pcs = write(sp).split("\n")
-    print "============== Writing Results"
-    print "#Lines: ", len(created_pcs)
-    print "#LostLines: ", len(orig_pcs) - len(created_pcs)
+    print("============== Writing Results")
+    print("#Lines: ", len(created_pcs))
+    print("#LostLines: ", len(orig_pcs) - len(created_pcs))
     diff = ["%s\n" % i for i in created_pcs if i not in " ".join(orig_pcs)]
-    print "Identical Lines: ", len(created_pcs) - len(diff)
-    print
-    print "Up to 10 random different lines (of %d):" % len(diff)
-    print "".join(diff[:10])
+    print("Identical Lines: ", len(created_pcs) - len(diff))
+    print()
+    print("Up to 10 random different lines (of %d):" % len(diff))
+    print("".join(diff[:10]))

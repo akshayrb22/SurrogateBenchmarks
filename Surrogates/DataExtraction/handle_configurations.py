@@ -20,7 +20,7 @@ __author__ = ["Katharina Eggensperger"]
 
 import numpy as np
 import re
-import configuration_space
+from . import configuration_space
 from collections import deque, OrderedDict
 
 
@@ -30,7 +30,7 @@ def remove_param_metadata(params):
     must be marked with "LOG$_{paramname}" or Q[0-999]_$paramname
     LOG/Q will be removed from the paramname
     """
-    for para in params.keys():
+    for para in list(params.keys()):
         tmp = params[para]
         del params[para]
         #para = para.strip().replace("-", "")
@@ -67,7 +67,7 @@ def remove_param_metadata(params):
             params[tmp] = round(float(params[new_name]) / q) * q
             del params[new_name]
 
-    for para in params.keys():
+    for para in list(params.keys()):
         assert (type(params[para]) == str or np.isfinite(params[para]))
 
     return params
@@ -113,15 +113,15 @@ def get_logparams(pcs_fn):
 
             if "LOG10_" in para_name:
                 pos = para_name.find("LOG10_")
-                new_name = remove_param_metadata({para_name: 23}).keys()[0]
+                new_name = list(remove_param_metadata({para_name: 23}).keys())[0]
                 log_dict[new_name] = "LOG10"
             elif "LOG2_" in para_name:
                 pos = para_name.find("LOG2_")
-                new_name = remove_param_metadata({para_name: 23}).keys()[0]
+                new_name = list(remove_param_metadata({para_name: 23}).keys())[0]
                 log_dict[new_name] = "LOG2"
             elif "LOG_" in para_name:
                 pos = para_name.find("LOG_")
-                new_name = remove_param_metadata({para_name: 23}).keys()[0]
+                new_name = list(remove_param_metadata({para_name: 23}).keys())[0]
                 log_dict[new_name] = "LOG"
             elif "]l" in complete_line or "]il" in complete_line or "]li" in complete_line:
                 #log_dict[para_name] = "POW10"
@@ -130,14 +130,14 @@ def get_logparams(pcs_fn):
                 # This is a regular para
                 continue
         else:
-            print "Don't know what is this: %s" % line
+            print("Don't know what is this: %s" % line)
             raise ValueError(line)
     return log_dict
 
 
 def remove_inactive(clean_dict, cond):
     replaced_pars = list()
-    q = deque(cond.keys())
+    q = deque(list(cond.keys()))
 
     while len(q) > 0:
         param_that_might_be_inactive = q.popleft()
@@ -211,14 +211,14 @@ def remove_inactive(clean_dict, cond):
 def get_log_to_uniform_map(sp):
     logmap = dict()
     for para in sp:
-        logmap[para] = remove_param_metadata({para: 23}).keys()[0]
+        logmap[para] = list(remove_param_metadata({para: 23}).keys())[0]
     return logmap
 
 
 def get_uniform_to_log_map(sp):
     unimap = dict()
     for para in sp:
-        unimap[remove_param_metadata({para: 23}).keys()[0]] = para
+        unimap[list(remove_param_metadata({para: 23}).keys())[0]] = para
     return unimap
 
 

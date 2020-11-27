@@ -32,7 +32,7 @@ def read_csv(fn, has_header=True, num_header_rows=1):
 
     data = list()
     header = list()
-    with open(fn, 'rb') as csvfile:
+    with open(fn, 'r') as csvfile:
         csv_reader = csv.reader(csvfile, delimiter=',', quotechar='|')
         for row in csv_reader:
             if header_rows_left > 0:
@@ -40,8 +40,8 @@ def read_csv(fn, has_header=True, num_header_rows=1):
                 header.append(row)
                 continue
             data.append([float(i.strip()) for i in row])
+    
     data = np.array(data)
-
     if not has_header:
         header = None
     if num_header_rows == 1:
@@ -66,7 +66,7 @@ def read_csv_as_list(fn, has_header=True, num_header_rows=1):
                 header.append(row)
                 continue
             row_list = list()
-            for v_idx, val in enumerate(row):
+            for _, val in enumerate(row):
                 try:
                     val = float(val.strip())
                     if int(val) == val:
@@ -120,7 +120,7 @@ def read_data(fn, has_header=True):
             try:
                 data.append([numpy.nan if i == "nan" else float(i.strip()) for i in row])
             except ValueError:
-                print idx, row
+                print(idx, row)
                 sys.exit(1)
     return header, data
 
@@ -138,12 +138,12 @@ def read_key_value(fn, has_header=True):
             try:
                 data[row[0]] = [numpy.nan if i == "nan" else float(i.strip()) for i in row[1:]]
             except ValueError:
-                print idx, row
+                print(idx, row)
                 sys.exit(1)
     return header, data
 
 
-def read_matrix_replace_higher_values(fn,  max_value=sys.maxint, has_header=True):
+def read_matrix_replace_higher_values(fn,  max_value=sys.maxsize, has_header=True):
     import numpy as np
     data = dict()
     key_list = list()
@@ -187,7 +187,7 @@ def save_to_csv(fn, header, data, models, key):
     with open(fn, 'wb') as csvfile:
         csv_writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
         csv_writer.writerow(header)
-        for idx, row in enumerate(models):
+        for _, row in enumerate(models):
             tmp = [row, ]
             tmp.extend([str(value) for value in data[row][key]])
             csv_writer.writerow(tmp)

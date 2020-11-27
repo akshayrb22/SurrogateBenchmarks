@@ -30,17 +30,17 @@ def evaluate_config(socket_name, params, buffer_size=1024, end_str="."*10):
     if not os.path.exists(socket_name):
         return "Socket %s does not exist" % socket_name
 
-    print params
+    print(params)
 
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(socket_name)
-        print "Found a socket on %s" % socket_name
+        print("Found a socket on %s" % socket_name)
         request = params + end_str
-        print "Requesting: %s" % request
+        print("Requesting: %s" % request)
         s.send(request)
         data = s.recv(buffer_size)
-        print "Answer: %s" % data
+        print("Answer: %s" % data)
         s.close()
         try:
             res = float(data)
@@ -92,7 +92,7 @@ def main():
         pcs_file = os.path.normpath(os.path.abspath(pcs_file))
 
     # Talk to daemon
-    print unknown
+    print(unknown)
 
     start = time.time()
     res = evaluate_config(socket_name=socket_dir, params=" ".join(unknown))
@@ -100,7 +100,7 @@ def main():
     if surrogate_data is not None and pcs_file is not None and \
             type(res) == str and \
             (res == "Could not connect to socket" or "does not exist" in res):
-        print "Daemon seems to be dead"
+        print("Daemon seems to be dead")
         if os.path.exists(socket_dir):
             os.remove(socket_dir)
 
@@ -114,15 +114,15 @@ def main():
         works = False
         while not works and try_ct < 20:
             answer = whisper(socket_name=socket_dir, message="SayHello")
-            print "Daemon answers: ", answer
+            print("Daemon answers: ", answer)
             if answer == "Hello =)":
                 works = True
-                print "Deamon is resurrected!"
+                print("Deamon is resurrected!")
             time.sleep(5)
             try_ct += 1
         
         if not works:
-            print "Could not bring daemon to life..."
+            print("Could not bring daemon to life...")
             raise ValueError("Socket is broken and daemon not repairable: %s" % str(args))
         
         # Now try one more time

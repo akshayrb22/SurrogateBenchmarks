@@ -45,12 +45,12 @@ class NuSupportVectorRegression(ScikitBaseClass.ScikitBaseClass):
         c = 1.0
         gamma = 0.0
         nu = 0.5
-        best_score = -sys.maxint
+        best_score = -sys.maxsize
 
         if random_iter > 0:
             sys.stdout.write("Do a random search %d times" % random_iter)
-            param_dist = {"C": numpy.power(2.0, range(-5, 16)),
-                          "gamma": numpy.power(2.0, range(-15, 4)),
+            param_dist = {"C": numpy.power(2.0, list(range(-5, 16))),
+                          "gamma": numpy.power(2.0, list(range(-15, 4))),
                           "nu": uniform(loc=0.0001, scale=1-0.0001)}
             param_list = [{"C": c, "gamma": gamma, "nu": nu}, ]
             param_list.extend(list(ParameterSampler(param_dist,
@@ -87,7 +87,7 @@ class NuSupportVectorRegression(ScikitBaseClass.ScikitBaseClass):
     def train(self, x, y, param_names, random_search=100,
               kernel_cache_size=2000, **kwargs):
         if self._debug:
-            print "Before preprocessing: 1st sample:\n", x[0]
+            print("Before preprocessing: 1st sample:\n", x[0])
         start = time.time()
         scaled_x = self._set_and_preprocess(x=x, param_names=param_names)
 
@@ -95,10 +95,10 @@ class NuSupportVectorRegression(ScikitBaseClass.ScikitBaseClass):
         self._check_scaling(scaled_x=scaled_x)
 
         if self._debug:
-            print "Shape of training data: ", scaled_x.shape
-            print "Param names: ", self._used_param_names
-            print "First training sample\n", scaled_x[0]
-            print "Encode: ", self._encode
+            print("Shape of training data: ", scaled_x.shape)
+            print("Param names: ", self._used_param_names)
+            print("First training sample\n", scaled_x[0])
+            print("Encode: ", self._encode)
 
         # Do a random search
         nu, c, gamma = self._random_search(random_iter=100, x=scaled_x, y=y,
@@ -110,8 +110,8 @@ class NuSupportVectorRegression(ScikitBaseClass.ScikitBaseClass):
                           cache_size=kernel_cache_size)
             nusvr.fit(scaled_x, y)
             self._model = nusvr
-        except Exception, e:
-            print "Training failed", e.message
+        except Exception as e:
+            print("Training failed", e.message)
             svr = None
         duration = time.time() - start
         self._training_finished = True

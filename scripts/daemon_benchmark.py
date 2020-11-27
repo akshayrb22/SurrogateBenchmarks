@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 from argparse import ArgumentParser
-import cPickle
+import pickle
 
 import os
 import socket
@@ -94,7 +94,7 @@ def parse_cli(misc_args):
 
 def build_input_array(params, other, sp, unimap, logdict, cond_dict, param_names, dflt):
     clean_dict = dict()
-    for i in params.keys():
+    for i in list(params.keys()):
         tmp_i = i
         if i[0] == "-":
             tmp_i = i[1:]
@@ -104,16 +104,16 @@ def build_input_array(params, other, sp, unimap, logdict, cond_dict, param_names
         else:
             clean_dict[tmp_i] = Surrogates.DataExtraction.\
                 handle_configurations.convert_to_number(params[i])
-    print "CLEAN", clean_dict
+    print("CLEAN", clean_dict)
     
     # Unlog parameter
     clean_dict = Surrogates.DataExtraction.handle_configurations.\
         put_on_uniform_scale(clean_dict, sp, unimap, logdict)
 
-    print "AFTER Unlogging:"
-    print clean_dict
-    print
-    print cond_dict
+    print("AFTER Unlogging:")
+    print(clean_dict)
+    print()
+    print(cond_dict)
     clean_dict = Surrogates.DataExtraction.handle_configurations.\
         remove_inactive(clean_dict, cond_dict)
 
@@ -162,10 +162,10 @@ def shutdown_server(s, socket_name):
     # Shutdown server and remove socket file
     try:
         s.shutdown(socket.SHUT_RDWR)
-    except Exception, e:
+    except Exception as e:
         import traceback
-        print "Something went wrong when shutting down the server"
-        print traceback.format_exc()
+        print("Something went wrong when shutting down the server")
+        print(traceback.format_exc())
     finally:
         os.remove(socket_name)
         # os.remove(socket_name + "daemon_log.txt")
@@ -176,7 +176,7 @@ def run_loop(socket_name, data_name, pcs, timeout_time=20*60, buffer_size=50,
              end_str="."*10):
     # Read stuff we need to build input arrays
     fh = open(data_name, 'r')
-    surrogate = cPickle.load(fh)
+    surrogate = pickle.load(fh)
     fh.close()
 
     sp = surrogate._sp
@@ -223,8 +223,8 @@ def run_loop(socket_name, data_name, pcs, timeout_time=20*60, buffer_size=50,
                 conn, addr = s.accept()
             except socket.timeout:
                 # No one wants to talk to me
-                print "I'm so lonesome, I could cry ... or die in", \
-                    timeout_blocking*timeout_ct, "sec"
+                print("I'm so lonesome, I could cry ... or die in", \
+                    timeout_blocking*timeout_ct, "sec")
                 timeout_ct -= 1
                 continue
 

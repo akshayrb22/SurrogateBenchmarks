@@ -10,8 +10,8 @@ import numpy as np
 np.random.seed(1)
 
 import scipy.linalg as spla
-from spearmint.util import slice_sample
-from spearmint.helpers import log
+from .spearmint.util import slice_sample
+from .spearmint.helpers import log
 
 '''
 Global constants.
@@ -76,7 +76,7 @@ def handle_slice_sampler_exception(exception, starting_point, proposal_measure, 
                 restarts_left = restarts_left - 1
         # if we leave the while loop we will raise the exception we got
     import traceback
-    print traceback.format_exc()
+    print(traceback.format_exc())
     raise exception
 
 
@@ -156,7 +156,7 @@ def sample_hyperparameters(mcmc_iters, noiseless, input_points, func_values, cov
     mean = np.mean(func_values)
     hyper_samples = []
     # sample hyper parameters
-    for i in xrange(0, mcmc_iters ):
+    for i in range(0, mcmc_iters ):
         if noiseless:
             noise = 1e-3
             [mean, amp2] = _sample_mean_amp_noise(input_points, func_values, cov_func, np.array([mean, amp2]), ls )

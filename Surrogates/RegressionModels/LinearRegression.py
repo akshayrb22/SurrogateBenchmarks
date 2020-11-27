@@ -42,10 +42,10 @@ class LinearRegression(ScikitBaseClass.ScikitBaseClass):
         self._check_scaling(scaled_x=scaled_x)
 
         if self._debug:
-            print "Shape of training data: ", scaled_x.shape
-            print "Param names: ", self._used_param_names
-            print "First training sample\n", scaled_x[0]
-            print "Encode: ", self._encode
+            print("Shape of training data: ", scaled_x.shape)
+            print("Param names: ", self._used_param_names)
+            print("First training sample\n", scaled_x[0])
+            print("Encode: ", self._encode)
 
         # Now train model
         start = time.time()
@@ -55,8 +55,8 @@ class LinearRegression(ScikitBaseClass.ScikitBaseClass):
                                                        copy_X=True)
             lr.fit(scaled_x, y)
             self._model = lr
-        except Exception, e:
-            print "Training failed", e.message
+        except Exception as e:
+            print("Training failed", e.message)
             lr = None
         duration = time.time() - start
         self._training_finished = True

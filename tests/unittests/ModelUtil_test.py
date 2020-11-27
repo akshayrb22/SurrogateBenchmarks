@@ -104,7 +104,7 @@ class ModelUtilTest(unittest.TestCase):
         self.assertEqual(ret_rel.dtype, thruth_rel.dtype)
         self.assertEqual(ret_rel.shape, thruth_rel.shape)
         self.assertIsInstance(ret_rel, np.ndarray)
-        print type(ret_rel)
+        print(type(ret_rel))
         for i in range(2):
             for j in range(7):
                 self.assertEqual(ret[i, j], thruth[i, j])

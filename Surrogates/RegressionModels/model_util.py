@@ -70,7 +70,7 @@ def encode(sp, x, param_names, num_folds, catdict):
     new_param_names = list()
     new_data = None
     encode_ct = 0
-    print "Encoding categorical features using a one hot encoding scheme"
+    print("Encoding categorical features using a one hot encoding scheme")
     for idx_p, p in enumerate(param_names):
         if p == "duration" or p == "performance":
             continue
@@ -86,10 +86,12 @@ def encode(sp, x, param_names, num_folds, catdict):
         #print new_data
         if p == "fold":
             encode_ct += 1
-            encoder = OneHotEncoder(n_values=num_folds, categorical_features='all', dtype=int)
+            encoder = OneHotEncoder(categories='auto', dtype=int)
+            # encoder = OneHotEncoder(n_values=num_folds, categorical_features='all', dtype=int)
         elif isinstance(sp[p], Surrogates.DataExtraction.configuration_space.CategoricalHyperparameter):
             encode_ct += 1
-            encoder = OneHotEncoder(n_values=len(sp[p].choices), categorical_features='all', dtype=int)
+            encoder = OneHotEncoder(categories='auto', dtype=int)
+            # encoder = OneHotEncoder(n_values=len(sp[p].choices), categorical_features='all', dtype=int)
         else:
             # Do nothing
             raise ValueError("You should not be here")
@@ -105,9 +107,9 @@ def encode(sp, x, param_names, num_folds, catdict):
 
         # Adjust param names
         if p == "fold":
-            val_range = range(num_folds)
+            val_range = list(range(num_folds))
         else:
-            val_range = range(len(sp[p].choices))
+            val_range = list(range(len(sp[p].choices)))
 
         for val in val_range:
             if p == "fold":
@@ -134,7 +136,7 @@ def encode_for_ArcGP(sp, x, rel_array, param_names, num_folds, catdict):
     new_data = None
     new_rel_array = None
     encode_ct = 0
-    print "Encoding categorical features using a one hot encoding scheme"
+    print("Encoding categorical features using a one hot encoding scheme")
     for idx_p, p in enumerate(param_names):
         if p == "duration" or p == "performance":
             continue
@@ -172,9 +174,9 @@ def encode_for_ArcGP(sp, x, rel_array, param_names, num_folds, catdict):
 
         # Adjust param names
         if p == "fold":
-            val_range = range(num_folds) #encoder.active_features_
+            val_range = list(range(num_folds)) #encoder.active_features_
         else:
-            val_range = range(len(sp[p].choices))
+            val_range = list(range(len(sp[p].choices)))
 
         for val in val_range:
             if new_rel_array is None:

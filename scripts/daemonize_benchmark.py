@@ -24,7 +24,7 @@ def kill_server(socket_name, buffer_size=1024, end_str="."*10):
     data = s.recv(buffer_size)
     s.shutdown(socket.SHUT_WR)
     s.close()
-    print "Should be 'Closing': %s" % data
+    print("Should be 'Closing': %s" % data)
 
 
 def main():
@@ -70,7 +70,7 @@ def main():
     sys.stdout.write(" ".join(cmd) + "\n")
 
     if not args.dry:
-        print "START"
+        print("START")
         cmd.append("--daemon")
         p = subprocess.Popen(cmd)
         sys.stdout.write(" ".join(cmd) + "\n")
@@ -80,13 +80,13 @@ def main():
         while try_ct < 20:
             answer = daemon_whisperer.whisper(socket_name=args.socket,
                                               message="SayHello")
-            print "Daemon answers: ", answer
+            print("Daemon answers: ", answer)
             if answer == "Hello =)":
-                print "Deamon is now at your commands!"
+                print("Deamon is now at your commands!")
                 return
             time.sleep(5)
             try_ct += 1
-        print "Could not bring daemon to life..."
+        print("Could not bring daemon to life...")
         sys.exit(1)
 
     return

@@ -18,7 +18,6 @@
 
 __author__ = ["Katharina Eggensperger"]
 
-
 import sys
 
 import numpy
@@ -46,9 +45,9 @@ def scale(scale_info, x):
                 x[row_idx][p_idx] -= lower[p_idx]
                 x[row_idx][p_idx] /= (upper[p_idx] - lower[p_idx])
             except TypeError:
-                sys.stderr.write("Error: %s, %s, %s" %(x[row_idx][p_idx],
-                                                       lower[p_idx],
-                                                       upper[p_idx]))
+                sys.stderr.write(
+                    "Error: %s, %s, %s" %
+                    (x[row_idx][p_idx], lower[p_idx], upper[p_idx]))
                 raise
     return x
 
@@ -83,12 +82,13 @@ def get_x_info_scaling_all(sp, x, param_names, num_folds, encoded=False):
                 max_val.append(None)
             else:
                 min_val.append(0)
-                max_val.append(num_folds-1)
-        elif isinstance(sp[p], Surrogates.DataExtraction.configuration_space.
-                        CategoricalHyperparameter):
+                max_val.append(num_folds - 1)
+        elif isinstance(
+                sp[p], Surrogates.DataExtraction.configuration_space.
+                CategoricalHyperparameter):
             # We scale features to be within [0,1]
             min_val.append(0)
-            len_choices = len(sp[p].choices)-1
+            len_choices = len(sp[p].choices) - 1
             if len_choices == 0:
                 len_choices = 1
             max_val.append(len_choices)
@@ -117,10 +117,11 @@ def get_x_info_scaling_no_categorical(sp, x, param_names, num_folds):
             continue
 
         if p == 'fold':
-                min_val.append(None)
-                max_val.append(None)
-        elif isinstance(sp[p], Surrogates.DataExtraction.configuration_space.
-                        CategoricalHyperparameter):
+            min_val.append(None)
+            max_val.append(None)
+        elif isinstance(
+                sp[p], Surrogates.DataExtraction.configuration_space.
+                CategoricalHyperparameter):
             # We scale features to be within [0,1]
             min_val.append(None)
             max_val.append(None)

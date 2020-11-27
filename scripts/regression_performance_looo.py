@@ -92,7 +92,7 @@ def main():
     data_x_hash = hash(numpy.array_repr(data_x))
     data_y_hash = hash(data_y.tostring())
 
-    print "Train %s\n" % model_type,
+    print("Train %s\n" % model_type, end=' ')
     train_data_x = numpy.array(data_x, copy=True)
     train_data_y = numpy.array(data_y, copy=True)
 
@@ -101,18 +101,18 @@ def main():
 
     if model.maximum_number_train_data() < train_data_x.shape[0]:
         max_n = model.maximum_number_train_data()
-        print "Limited model, reducing #data from %d" % train_data_x.shape[0]
+        print("Limited model, reducing #data from %d" % train_data_x.shape[0])
         train_data_x, _n_x, train_data_y, _n_y = \
             cross_validation.train_test_split(train_data_x, train_data_y,
                                               train_size=max_n,
                                               random_state=RNG)
-        print "to %d" % train_data_x.shape[0]
+        print("to %d" % train_data_x.shape[0])
     else:
-        print "Reducing data not neccessary"
+        print("Reducing data not neccessary")
 
     dur = model.train(x=train_data_x, y=train_data_y, param_names=para_header[:-2])
 
-    print "Training took %fsec" % dur
+    print("Training took %fsec" % dur)
 
     _header, test_data = read_csv(args.testdata, has_header=True,
                                   num_header_rows=3)
@@ -131,7 +131,7 @@ def main():
         fh = open(model_test_fn, "w")
         fh.close()
 
-    print test_predictions.shape
+    print(test_predictions.shape)
     save_one_line_to_csv(model_test_fn, test_predictions, model_type)
 
 

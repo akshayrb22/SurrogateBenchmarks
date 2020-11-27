@@ -19,18 +19,14 @@
 __author__ = ["Katharina Eggensperger"]
 
 from Surrogates.RegressionModels import ScikitBaseClass
-
 import sys
 import time
-
 import numpy
-numpy.random.seed(1)
-
-from sklearn.cross_validation import train_test_split
-from sklearn.grid_search import ParameterSampler
+from sklearn.model_selection import train_test_split, ParameterSampler
 from sklearn.ensemble import RandomForestRegressor
-
 from Surrogates.DataExtraction.data_util import read_csv
+
+numpy.random.seed(1)
 
 
 class RandomForest(ScikitBaseClass.ScikitBaseClass):
@@ -45,18 +41,18 @@ class RandomForest(ScikitBaseClass.ScikitBaseClass):
         n_estimators = 10
         min_samples_split = 2
         max_features = x.shape[1]
-        best_score = -sys.maxint
+        best_score = -sys.maxsize
 
         if random_iter > 0:
             sys.stdout.write("Do a random search %d times" % random_iter)
-            param_dist = {"n_estimators": range(10, 110, 10),
-                          "min_samples_split": range(2, 20, 2),
-                          "max_features":  numpy.linspace(0.1, 1, num=10)}
+            param_dist = {"n_estimators": list(range(10, 110, 10)),
+                          "min_samples_split": list(range(2, 20, 2)),
+                          "max_features": numpy.linspace(0.1, 1, num=10)}
             param_list = [{"n_estimators": n_estimators,
                            "min_samples_split": min_samples_split,
                            "max_features": max_features}, ]
             param_list.extend(list(ParameterSampler(param_dist,
-                                                    n_iter=random_iter-1,
+                                                    n_iter=random_iter - 1,
                                                     random_state=self._rng)))
             for idx, d in enumerate(param_list):
                 rf = RandomForestRegressor(n_estimators=int(d["n_estimators"]),
@@ -104,10 +100,10 @@ class RandomForest(ScikitBaseClass.ScikitBaseClass):
         self._check_scaling(scaled_x=scaled_x)
 
         if self._debug:
-            print "Shape of training data: ", scaled_x.shape
-            print "Param names: ", self._used_param_names
-            print "First training sample\n", scaled_x[0]
-            print "Encode: ", self._encode
+            print("Shape of training data: ", scaled_x.shape)
+            print("Param names: ", self._used_param_names)
+            print("First training sample\n", scaled_x[0])
+            print("Encode: ", self._encode)
 
         # Do a random search
         n_estimators, min_samples_split, max_features = \

@@ -26,8 +26,8 @@ import time
 import numpy
 numpy.random.seed(1)
 
-from sklearn.cross_validation import train_test_split
-from sklearn.grid_search import ParameterSampler
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import ParameterSampler
 from sklearn.neighbors import KNeighborsRegressor
 
 
@@ -41,14 +41,14 @@ class KNN(ScikitBaseClass.ScikitBaseClass):
     def _random_search(self, random_iter, x, y):
         # Default Values
         n_neighbors = 5
-        best_score = -sys.maxint
+        best_score = -sys.maxsize
 
         if random_iter > 0:
             sys.stdout.write("Do a random search %d times" % random_iter)
             n_list = [1, ]
             while n_list[-1]*2 < x.shape[0]/2:
                 n_list.append(n_list[-1]*2)
-            n_list.extend(range(1,11))
+            n_list.extend(list(range(1,11)))
             param_dist = {"n_neighbors": n_list}
             param_list = [{"n_neighbors": n_neighbors}, ]
             param_list.extend(list(ParameterSampler(param_dist,
@@ -88,10 +88,10 @@ class KNN(ScikitBaseClass.ScikitBaseClass):
         self._check_scaling(scaled_x=scaled_x)
 
         if self._debug:
-            print "Shape of training data: ", scaled_x.shape
-            print "Param names: ", self._used_param_names
-            print "First training sample\n", scaled_x[0]
-            print "Encode: ", self._encode
+            print("Shape of training data: ", scaled_x.shape)
+            print("Param names: ", self._used_param_names)
+            print("First training sample\n", scaled_x[0])
+            print("Encode: ", self._encode)
 
         # Do a random search
         n_neighbors = self._random_search(random_iter=100, x=scaled_x, y=y)

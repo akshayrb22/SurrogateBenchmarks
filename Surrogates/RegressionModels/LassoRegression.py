@@ -28,10 +28,8 @@ numpy.random.seed(1)
 
 from scipy.stats import uniform
 
-from sklearn.cross_validation import train_test_split
-from sklearn.grid_search import ParameterSampler
+from sklearn.model_selection import train_test_split, ParameterSampler
 from sklearn.linear_model import Lasso
-
 from Surrogates.DataExtraction.data_util import read_csv
 
 
@@ -45,7 +43,7 @@ class LassoRegression(ScikitBaseClass.ScikitBaseClass):
     def _random_search(self, random_iter, x, y):
         # Default Values
         alpha = 1.0
-        best_score = -sys.maxint
+        best_score = -sys.maxsize
 
         if random_iter > 0:
             sys.stdout.write("Do a random search %d times" % random_iter)
@@ -91,10 +89,10 @@ class LassoRegression(ScikitBaseClass.ScikitBaseClass):
         self._check_scaling(scaled_x=scaled_x)
 
         if self._debug:
-            print "Shape of training data: ", scaled_x.shape
-            print "Param names: ", self._used_param_names
-            print "First training sample\n", scaled_x[0]
-            print "Encode: ", self._encode
+            print("Shape of training data: ", scaled_x.shape)
+            print("Param names: ", self._used_param_names)
+            print("First training sample\n", scaled_x[0])
+            print("Encode: ", self._encode)
 
         # Do a random search
         alpha = self._random_search(random_iter=100, x=scaled_x, y=y)
